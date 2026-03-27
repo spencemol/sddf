@@ -1,11 +1,12 @@
 # SDDF Mode: Project-Based
-**Version:** 0.4.0
+**Version:** 0.5.0
 
 ## Philosophy
 Project-Based Mode optimizes for production durability.
 You know what you're building. Code is a deliverable that must survive
 in a real system. The human owns the spec. The agent executes.
 Review gates enforce quality at every phase transition.
+Runtime orchestration is explicit and separate from backend adapter rules.
 
 ## Weight Classes
 
@@ -53,10 +54,25 @@ Every task follows R-G-F regardless of weight:
 Red: failing tests first | Green: minimum impl | Refactor: clean up with safety net
 Quick mode: compressed to single agent call (≤300 token spec only).
 
+Quick refactor may be skipped by spec rule.
+
 ## Wave Execution (Full + Architecture only)
 Tasks grouped by dependency depth. Within-wave tasks run simultaneously.
 Wave gate (full test suite) runs after each wave before advancing.
 See Decompose Skill (07) for wave plan format.
+
+## Runtime Ownership Model (All Weights)
+- One workspace owner thread owns mutations by default.
+- Additional threads in a workspace are advisor/reviewer unless explicitly promoted.
+- Cross-lane coordination is artifact-based, not live peer-to-peer chat coordination.
+- Runtime-specific controls (workspaces, scripts, checkpoints) come from runtime guides.
+
+See `.sddf/execution/runtime-contract.md` and `.sddf/execution/dispatch-model.md`.
+
+## Parallel Quick Clarification
+Parallel Quick means multiple independent Quick tasks may run concurrently,
+each in a separate workspace/lane with single-owner mutation policy.
+It does not mean one Quick task is split across multiple mutating agents.
 
 ## Review Gates
 | Gate | Weight | What's Checked |
