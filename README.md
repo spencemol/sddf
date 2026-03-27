@@ -23,7 +23,7 @@ This is not an anti-tool stance. SDDF is designed to compose with those ecosyste
 
 ## Quick Setup
 ### 1) Add SDDF to your project
-Copy `.sddf/` into your repository root.
+Copy [`./.sddf/`](./.sddf/) into your repository root.
 
 ```bash
 cp -R /path/to/sddf/.sddf /path/to/your-project/
@@ -35,10 +35,10 @@ Default v1 runtime model:
 - Backends: `Claude Code CLI` and `Codex CLI`
 
 Start from templates:
-- `.sddf/templates/runtime-manifest.md`
-- `.sddf/templates/conductor.json`
-- `.sddf/templates/dispatch-packet.md`
-- `.sddf/templates/skill-bundle.md`
+- [`./.sddf/templates/runtime-manifest.md`](./.sddf/templates/runtime-manifest.md)
+- [`./.sddf/templates/conductor.json`](./.sddf/templates/conductor.json)
+- [`./.sddf/templates/dispatch-packet.md`](./.sddf/templates/dispatch-packet.md)
+- [`./.sddf/templates/skill-bundle.md`](./.sddf/templates/skill-bundle.md)
 
 ### 3) If using Claude Code, sync SDDF skills
 ```bash
@@ -53,13 +53,13 @@ cp .sddf/skills/*.md .claude/skills/
 
 ### 5) Run your first task through SDDF
 Use:
-- `.sddf/modes/project-based.md`
-- `.sddf/WEIGHT-GUIDE.md`
-- `.sddf/templates/task-spec-quick.md` or `.sddf/templates/task-spec-full.md`
+- [`./.sddf/modes/project-based.md`](./.sddf/modes/project-based.md)
+- [`./.sddf/WEIGHT-GUIDE.md`](./.sddf/WEIGHT-GUIDE.md)
+- [`./.sddf/templates/task-spec-quick.md`](./.sddf/templates/task-spec-quick.md) or [`./.sddf/templates/task-spec-full.md`](./.sddf/templates/task-spec-full.md)
 
 ## Agent Managers And Coding Agents
 ### First-class in current SDDF
-- Agent manager/runtime: `Conductor` (`.sddf/adapters/conductor.md`)
+- Agent manager/runtime: `Conductor` ([`./.sddf/adapters/conductor.md`](./.sddf/adapters/conductor.md))
 - Backends: `Claude Code CLI` and `Codex CLI`
 
 ### Additional adapter paths
@@ -93,8 +93,8 @@ time in separate workspaces. It does not mean one Quick task is edited by
 multiple mutating agents at once.
 
 ## Where To Go Next
-- Framework overview: `.sddf/README.md`
-- Runtime contract: `.sddf/execution/runtime-contract.md`
-- Dispatch model: `.sddf/execution/dispatch-model.md`
-- Capability matrix: `.sddf/execution/capability-matrix.md`
-- Examples: `.sddf/examples/`
+- Framework overview: [`./.sddf/README.md`](./.sddf/README.md)
+- Runtime contract: [`./.sddf/execution/runtime-contract.md`](./.sddf/execution/runtime-contract.md)
+- Dispatch model: [`./.sddf/execution/dispatch-model.md`](./.sddf/execution/dispatch-model.md)
+- Capability matrix: [`./.sddf/execution/capability-matrix.md`](./.sddf/execution/capability-matrix.md)
+- Examples: [`./.sddf/examples/`](./.sddf/examples/)

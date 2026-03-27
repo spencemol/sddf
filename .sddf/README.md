@@ -79,7 +79,7 @@ Research/watchlist only:
 - Codex App
 - Google Antigravity
 
-See `.sddf/execution/runtime-contract.md`.
+See [`./execution/runtime-contract.md`](./execution/runtime-contract.md).
 
 ---
 
@@ -124,17 +124,14 @@ When in doubt, classify heavier.
 ---
 
 ## File Structure
-```
-.sddf/
-├── README.md
-├── skills/                         ← 14 vendor-neutral skills
-├── templates/                      ← L1-L5 + runtime templates
-├── adapters/                       ← tool/runtime guides
-├── execution/                      ← runtime contract + routing + matrix
-├── modes/                          ← mode guides
-├── examples/                       ← scenario examples
-└── graduations/                    ← archived graduation reports
-```
+- [`./README.md`](./README.md)
+- [`./skills/`](./skills/) - 14 vendor-neutral skills
+- [`./templates/`](./templates/) - L1-L5 + runtime templates
+- [`./adapters/`](./adapters/) - tool/runtime guides
+- [`./execution/`](./execution/) - runtime contract + routing + matrix
+- [`./modes/`](./modes/) - mode guides
+- [`./examples/`](./examples/) - scenario examples
+- [`./graduations/`](./graduations/) - archived graduation reports
 
 ---
 
