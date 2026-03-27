@@ -1,5 +1,5 @@
 
 # SDDF proto output (disposable)
 proto/
-.sddf/cost-log.jsonl
+cost-log.jsonl
 /tmp/codex-output/

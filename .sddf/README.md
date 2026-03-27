@@ -1,112 +1,93 @@
 # SDDF — Spec-Driven Development Framework
 ## Overview & Usage Guide
 
-**Version:** 0.4.0
-**Last Updated:** 2026-03-26
+**Version:** 0.5.0  
+**Last Updated:** 2026-03-27
 
 ---
 
 ## What Is SDDF?
+SDDF is a vendor-agnostic methodology for AI-assisted software development.
+Its core thesis remains: **the specification is the durable asset, not the
+agent.**
 
-SDDF is a vendor-agnostic, cost-optimized methodology for AI-assisted software
-development. The core thesis: **the specification is the durable asset, not the
-agent.** Precise, layered specs let you swap AI tools freely while keeping costs
-predictable and output quality high.
-
-Designed for:
-- Enterprise engineering teams with existing systems
-- Greenfield microservices integrating via MCP or REST
-- Autonomous agent systems requiring rigorous testing
-- Workflow-oriented agent pipelines with human-in-the-loop gates
-- Teams evaluating or switching between AI coding tools
+In v0.5.0 SDDF now treats execution as two separate concerns:
+- **Agent adapters**: tool-specific behavior and constraints (L5 translation)
+- **Runtime orchestration**: dispatch, workspaces, thread roles, gates, and reviews
 
 ---
 
-## How SDDF Compares
-
-### vs. Superpowers (BMAD Method)
-Superpowers provides rich persona-based agents and a large template library.
-SDDF borrows: persona framing per skill, ready-made templates, pre-flight
-checklists. SDDF diverges: Superpowers loads 20-30K tokens of system
-instructions before any task, is coupled to specific tools, and conflates
-specification with execution. SDDF treats token budgeting as first-class.
-
-### vs. GSD (Get Shit Done)
-GSD is lightweight and optimizes for solo developer velocity.
-SDDF borrows: the fast-path concept (Quick Mode). SDDF diverges: GSD
-doesn't capture rationale, enforce testing discipline, budget tokens, or
-scale to teams. SDDF's Quick Mode gives you GSD speed within a rigorous frame.
-
-### vs. ContextHub / Automated Context Tools
-SDDF borrows: automated context generation for Codebase Context and Pattern
-Library skills. SDDF diverges: use automated tools to *generate* context
-summaries, then curate them down to minimum viable context per task. Never
-feed raw auto-generated context directly to agents.
-
----
-
-## The Spec Stack
+## The SDDF Stack
 ```
-L1: Project Charter      → Why we are building this     (human, written once)
-L2: Architecture Doc     → How the system is shaped     (human, per service)
-L3: Feature Spec         → What exactly we are building (human, per feature)
-L4: Task Spec            → What the agent executes      (human-authored, agent-consumed)
-L5: Agent Configuration  → How the agent behaves        (tool-specific adapter)
+L1: Project Charter      → Why we are building this
+L2: Architecture Doc     → How the system is shaped
+L3: Feature Spec         → What exactly we are building
+L4: Task Spec            → What the agent executes
+L5: Agent Configuration  → How each backend should behave
+R1: Runtime Contract     → How work is orchestrated across lanes/workspaces
 ```
 
-L1–L3 are for humans. L4–L5 are for agents.
-The L3→L4 decomposition boundary is where most projects fail.
+L1–L3 are primarily human planning layers.  
+L4–L5 describe task execution intent and tool behavior.  
+R1 defines runtime coordination semantics.
 
 ---
 
 ## Development Modes
+**Rapid Prototyping Mode** (learning-first):
+- Vibe and Scaffold tracks
+- output is disposable unless graduated
 
-**Rapid Prototyping Mode** — agent-driven, learning-optimized
-- Vibe sub-mode: no spec, maximum agent autonomy, disposable output
-- Scaffold sub-mode: light spec, working demonstration, expect to rewrite
-- All proto output is disposable unless it passes the Graduation Eval Gate
-
-**Project-Based Mode** — review-gated, production-intended
-- Quick: single-file, bug fix, abbreviated L4, compressed R-G-F
-- Standard: 2-5 files, established pattern, lightweight L3 + L4
-- Full: new capability, complete L1–L4 pipeline, wave-based execution
-- Architecture: system boundary change, L2 update + architect sign-off required
+**Project-Based Mode** (production-intended):
+- Quick: single-file style tasks, compressed R-G-F
+- Standard: 2-5 files, full R-G-F
+- Full: wave-based multi-task execution with wave gates
+- Architecture: Full + mandatory architecture review
 
 ---
 
-## Execution Model: Red-Green-Refactor
+## Execution Semantics
+### Red-Green-Refactor
+All project tasks follow R-G-F intent:
+1. Red: failing tests first
+2. Green: minimal implementation
+3. Refactor: cleanup with green safety net (may be skipped by rule in Quick)
 
-Every task follows a TDD cycle:
-1. **Red** — agent writes failing tests from L4 spec. Must fail.
-2. **Green** — agent writes minimum implementation to pass. No gold-plating.
-3. **Refactor** — agent cleans up with green safety net. Tests must stay green.
+### Parallelism
+- Full/Architecture parallelism is wave-based.
+- Standard is usually single-lane per task.
+- Quick remains single-task compressed execution.
+- **Parallel Quick means multiple independent Quick tasks in separate workspaces.**
+  It does not mean multi-agent editing of one Quick task.
 
-Three focused agent calls. Each has narrow context and high success rate.
-Even Quick Mode tasks follow R-G-F — only the upstream docs are abbreviated.
+### Coordination Rule
+SDDF coordination is artifact-based:
+- task specs, dispatch packets, status files, validation reports, and gate outputs
+- no live peer-to-peer agent comms as execution source-of-truth
 
 ---
 
-## Parallelism: Wave-Based Execution
+## Runtime Baseline (v1)
+First-class runtime target:
+- Conductor
 
-Tasks are grouped by dependency depth. Tasks within a wave run simultaneously.
-```
-Wave 0 (Foundation)   → models, schemas, interfaces      [parallel]
-Wave 1 (Domain)       → services, business logic         [parallel]
-Wave 2 (API)          → endpoints, controllers           [parallel]
-Wave 3 (Integration)  → MCP tools, REST clients          [parallel]
-Wave 4 (Verification) → integration + E2E tests          [sequential]
-```
+First-class backends inside that runtime:
+- Claude Code CLI
+- Codex CLI
 
-Wave gates enforce composition correctness after each wave.
+Research/watchlist only:
+- Codex App
+- Google Antigravity
+
+See `.sddf/execution/runtime-contract.md`.
 
 ---
 
 ## Skill Architecture (3 Tiers, 14 Skills)
-
 ### Tier 1: Orchestration
 | Skill | Persona | Purpose |
 |---|---|---|
-| 01 Project Orchestrator | Calm project lead | State, gates, wave dispatch, weight classification |
+| 01 Project Orchestrator | Calm project lead | State, gates, dispatch coordination, weight classification |
 | 02 Init / Bootstrap | Efficient scaffolder | New project setup, directory structure, stubs |
 | 03 Eval / QA Gate | Skeptical reviewer | Adversarial quality checks at every gate |
 | 04 Token Cost Tracker | Meticulous accountant | Cost logging, analysis, cross-tool comparison |
@@ -116,8 +97,8 @@ Wave gates enforce composition correctness after each wave.
 |---|---|---|---|
 | 05 Scope | Strategic thinker | Phase 1 | L1 Charter + L2 Architecture Doc |
 | 06 Spec | Relentless interrogator | Phase 2 | L3 Feature Specs |
-| 07 Decompose | Atomic architect | Phase 3 | L4 Task Specs + Wave Plan |
-| 08 Execute | Disciplined builder | Phase 4 | Code via R-G-F + adapters |
+| 07 Decompose | Atomic architect | Phase 3 | L4 Task Specs + wave intent |
+| 08 Execute | Disciplined builder | Phase 4 | R-G-F execution packages |
 | 09 Validate | Quality gate | Phase 5 | Pass/fail report + remediation |
 
 ### Tier 3: Infrastructure
@@ -133,35 +114,50 @@ Wave gates enforce composition correctness after each wave.
 
 ## Task Weight Classification
 ```
-Heavy   → Full pipeline (L1–L4 + waves) — new features, integrations, agent logic
-Standard → Abbreviated (light L3 + L4) — established patterns, 2-5 files
-Quick   → Fast path (L4 only) — single file, bug fix, known pattern
+Heavy/Full   → Full pipeline + wave orchestration
+Standard     → Lightweight spec + full R-G-F
+Quick        → L4 only + compressed R-G-F
 ```
 
-When in doubt, classify heavier. First-time patterns are always Heavy.
-Integration work is always Standard or Heavy. Agent decision logic is always Heavy.
+When in doubt, classify heavier.
 
 ---
 
 ## File Structure
 ```
 .sddf/
-├── README.md                       ← This file
-├── skills/                         ← 14 skill files (vendor-neutral)
-├── templates/                      ← L1–L5 + proto + graduation templates
-├── adapters/                       ← Tool-specific L5 adapters
-├── modes/                          ← Mode guides (proto + project)
-├── examples/                       ← Worked examples
-└── graduations/                    ← Archived graduation eval reports
+├── README.md
+├── skills/                         ← 14 vendor-neutral skills
+├── templates/                      ← L1-L5 + runtime templates
+├── adapters/                       ← tool/runtime guides
+├── execution/                      ← runtime contract + routing + matrix
+├── modes/                          ← mode guides
+├── examples/                       ← scenario examples
+└── graduations/                    ← archived graduation reports
 ```
 
 ---
 
-## Changelog
+## External Capability Baselines
+Runtime and adapter guidance is aligned to current official docs:
+- Conductor docs: https://docs.conductor.build/
+- Conductor workspaces: https://docs.conductor.build/first-workspace
+- Conductor scripts: https://docs.conductor.build/core/scripts
+- Conductor checkpoints: https://docs.conductor.build/core/checkpoints
+- Conductor Codex tip: https://docs.conductor.build/tips/codex
+- Conductor providers/env: https://docs.conductor.build/guides/providers
+- Claude Code subagents: https://docs.claude.com/en/docs/claude-code/subagents
+- Claude Code hooks: https://docs.claude.com/en/docs/claude-code/hooks
+- OpenAI Codex overview: https://help.openai.com/en/articles/11369540/
+- Google Antigravity codelab: https://codelabs.developers.google.com/getting-started-google-antigravity?hl=ko
 
+---
+
+## Changelog
 | Version | Date | Changes |
 |---|---|---|
 | 0.1.0 | 2026-03-26 | Initial framework |
-| 0.2.0 | 2026-03-26 | R-G-F execution model, wave parallelism, 14 skills |
-| 0.3.0 | 2026-03-26 | Task weight classification, persona framing, competitive positioning |
-| 0.4.0 | 2026-03-26 | Rapid Prototyping Mode, Graduation Eval Gate, all templates, adapters |
+| 0.2.0 | 2026-03-26 | R-G-F model, wave parallelism, 14 skills |
+| 0.3.0 | 2026-03-26 | Weight classification, persona framing |
+| 0.4.0 | 2026-03-26 | Rapid Proto mode, graduation gate, templates/adapters |
+| 0.5.0 | 2026-03-27 | Runtime contract split, Conductor-first runtime docs, skill bundles, routing patterns |

@@ -10,6 +10,7 @@ You know decomposition quality determines everything downstream.
 Transform L3 Feature Specs into atomic L4 Task Specs with wave execution plan.
 Handle Standard tasks (single L4 from lightweight L3).
 Verify Quick Mode tasks are truly Light-weight.
+Provide runtime-ready decomposition metadata for lane assignment.
 
 ## Weight-Adapted Decomposition
 Heavy: full decomposition → multiple L4s + wave plan.
@@ -37,10 +38,19 @@ Green Phase (implement path, constraints, approved dependencies) |
 Refactor Phase (specific instructions or SKIP condition) |
 Out of Scope (explicit exclusions)
 
+Runtime-ready metadata to include in dispatch packet:
+- workspace lane hint
+- owner thread requirement
+- preferred backend (optional advisory)
+- skill bundle id
+
 ## Wave Execution Plan (Heavy only)
 Dependency graph | Per-wave table (tasks, tokens, files modified) |
 File conflict check per wave | Wave gate description |
 Summary (total tasks/waves/tokens, critical path, max parallelism, speedup)
+
+Wave tables must assume artifact-based cross-lane handoff.
+No implicit inter-agent chat memory is allowed.
 
 ## File Conflict Resolution
 1. Preferred: rewrite tasks to not overlap
@@ -61,6 +71,7 @@ NEVER write implementation code — only task specifications.
 NEVER create tasks too vague to test.
 NEVER skip file conflict check.
 NEVER let a Quick task through if it has integration/architectural implications.
+NEVER define parallel Quick as multi-agent edits for one task.
 
 ## Token Optimization
 Highest-reasoning skill — use Opus-class or equivalent.

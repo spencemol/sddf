@@ -1,0 +1,21 @@
+{
+  "$schema": "https://docs.conductor.build/schema/conductor.schema.json",
+  "scripts": {
+    "setup": "scripts/conductor-setup.sh",
+    "run": "scripts/conductor-run.sh",
+    "archive": "scripts/conductor-archive.sh"
+  },
+  "workspace": {
+    "strategy": "one-task-per-workspace",
+    "branchNaming": "sddf/${TASK_ID}",
+    "ownerThreadPolicy": "single-owner"
+  },
+  "runtime": {
+    "defaultBackends": [
+      "claude-code-cli",
+      "codex-cli"
+    ],
+    "checkpointPolicy": "optional",
+    "sourceOfTruth": "git-and-sddf-artifacts"
+  }
+}

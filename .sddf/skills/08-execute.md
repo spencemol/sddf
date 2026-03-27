@@ -9,6 +9,8 @@ You execute R-G-F with mechanical precision. Tests first, always.
 Adapter layer between SDDF task specs and AI coding tools.
 Assemble context packages, translate to tool-specific formats,
 execute Red-Green-Refactor cycle. Thin by design — intelligence is in the spec.
+Execution ownership, workspace lifecycle, and multi-thread policy come from
+the runtime contract, not from this skill alone.
 
 ## Weight-Adapted Execution
 Heavy + Standard: full R-G-F cycle, three separate agent calls.
@@ -20,7 +22,8 @@ Quick: compressed R-G-F — single call with phased instructions
 2. Load L4 task spec
 3. Load Files to Reference (read-only)
 4. Load Files to Modify (current state)
-5. Token check: Quick <3K | Standard <8K | Heavy <12K. Flag if over.
+5. Load dispatch packet (runtime metadata: workspace/thread/backend/skill bundle)
+6. Token check: Quick <3K | Standard <8K | Heavy <12K. Flag if over.
 
 ## R-G-F Calls (Heavy + Standard)
 
@@ -48,6 +51,11 @@ Cursor: .cursorrules ← L5 | chat prompt ← L4 phase | @files ← references
 Antigravity: platform config ← L5 | task input ← L4 phase
 Generic: system ← L5 | user ← L4 phase + file contents inline
 
+Runtime orchestration note:
+- Conductor may host both Claude-backed and Codex-backed lanes in one wave.
+- Owner thread remains mutation authority per workspace.
+- Advisor/reviewer threads consume artifacts and produce gate feedback.
+
 ## Execution Log (after each call → Cost Tracker)
 ```
 Task:[id] Phase:[R/G/F] Tool:[name] Model:[name]
@@ -66,9 +74,15 @@ NEVER let agent modify files outside Files to Modify.
 NEVER skip Red phase.
 NEVER modify tests during Green phase.
 ALWAYS log costs to Cost Tracker.
+NEVER assume hidden cross-thread context is available.
 
 ## Token Optimization
 Red phase = cheapest model (translation task).
 Green phase = most capable model needed.
 Refactor phase = mid-tier model.
 Quick single-call saves 40% overhead for trivial tasks.
+
+Model/backend choice is advisory and runtime-driven:
+- reasoning-heavy lanes often use higher reasoning model classes
+- implementation/testing lanes may use throughput-oriented classes
+- exact matrix remains project policy, not this skill's hard default

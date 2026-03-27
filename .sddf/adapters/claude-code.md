@@ -1,12 +1,20 @@
 # SDDF Adapter: Claude Code
 **Tool:** Claude Code (Anthropic)
 **L5 source:** .sddf/agent-config.md
-**Adapter version:** 0.4.0
+**Adapter version:** 0.5.0
 
 ## Overview
-Claude Code is the closest native fit for SDDF. Skills map directly to
-.claude/skills/, --allowedTools enforces file boundaries, and CLAUDE.md
-maps directly to the L5 config. Adapter overhead is minimal.
+Claude Code is the strongest native backend for SDDF skill execution.
+In v0.5.0 it is treated as a backend that can run inside Conductor runtime lanes.
+
+Key properties:
+- native SDDF skill mapping through `.claude/skills/`
+- strong file-boundary enforcement with `--allowedTools`
+- optional subagents as intra-thread helpers
+
+Runtime orchestration (workspaces, owner threads, review threads) is defined in:
+- `.sddf/execution/runtime-contract.md`
+- `.sddf/adapters/conductor.md`
 
 ## File Layout
 ```
@@ -43,7 +51,29 @@ Available:
 [etc.]
 ```
 
-## Phase Execution Commands
+## Runtime-Aware Thread Usage (Conductor)
+Use one owner chat per workspace by default.
+
+When to use separate workspace threads:
+- task has independent file boundaries
+- task is wave-parallelizable
+- task needs independent mutation ownership
+
+When to use Claude subagents (same owner thread):
+- bounded side analysis
+- focused review/checking helpers
+- non-owner decomposition of context-heavy reasoning
+
+Subagents are helpers, not replacements for workspace-level parallel lanes.
+
+## Hook Guidance
+Recommended hook coverage:
+- `SessionStart`: load workspace policy and skill bundle summary
+- `PreToolUse`: enforce path boundary policy and disallowed command checks
+- `PostToolUse`: write artifact snippets for traceability (tests run, changed files)
+- subagent lifecycle hooks/events: ensure subagents inherit bundle constraints
+
+## Phase Execution Commands (CLI-oriented)
 
 Full pipeline task — Red phase:
 ```bash
@@ -109,6 +139,7 @@ NEVER use Edit(**) or Edit(src/**) for project-mode tasks.
 | Proto Scaffold | claude-sonnet-4-6 |
 
 Cost impact: Haiku for Red + Refactor saves ~30-40% per task vs. Sonnet throughout.
+Treat this table as an adapter pattern, not a framework-wide mandatory matrix.
 
 ## package.json Scripts
 ```json
@@ -133,6 +164,17 @@ Cost impact: Haiku for Red + Refactor saves ~30-40% per task vs. Sonnet througho
 - Run each R-G-F phase with --no-continue for clean context windows
   and accurate token accounting.
 - CLAUDE.md loads on every invocation — keep it under 1,000 tokens.
+- In Conductor runtime, owner thread mutation policy still applies even with subagents.
+- Checkpoints are optional runtime safety tools; git + SDDF artifacts stay source-of-truth.
+
+## Skill Bundle Continuity
+Claude-backed lanes should consume bundle definitions from:
+- `.sddf/templates/skill-bundle.md`
+
+Mapping approach:
+1. map bundle role to native `/project:` skills
+2. preload critical constraints in session/hook startup
+3. require subagents to inherit same bundle expectations
 
 ## Setup Checklist
 - [ ] CLAUDE.md generated from .sddf/agent-config.md
@@ -140,6 +182,9 @@ Cost impact: Haiku for Red + Refactor saves ~30-40% per task vs. Sonnet througho
 - [ ] package.json scripts added
 - [ ] CLAUDE.md under 1,000 tokens
 - [ ] .gitignore: proto/ added, .claude/ kept in source control
+- [ ] runtime manifest defines owner thread policy for Claude-backed lanes
+- [ ] hook policy documented for SessionStart/PreToolUse/PostToolUse
+- [ ] skill bundle mapping documented for Claude lanes
 
 ---
-*SDDF Claude Code Adapter | v0.4.0 — source: .sddf/agent-config.md*
+*SDDF Claude Code Adapter | v0.5.0 — source: .sddf/agent-config.md*
